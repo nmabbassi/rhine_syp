@@ -28,3 +28,5 @@ ggplot(rh_data, aes(x=`Year`,
   scale_color_manual(name="Legend", 
                      values = c(`Treaty Introduced` = "steelblue3", 
                                 `Treaty Ratified` = "tomato4"))
+
+
