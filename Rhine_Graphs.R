@@ -52,23 +52,12 @@ ggplot(rh_data, aes(x=`Year`))+
   theme_gray()+
   theme(legend.position="bottom", legend.background=element_rect
         (fill="gray95", linetype=1, size=0.15, color=1))+
-  geom_vline(xintercept = 1976, 
+ 
+   geom_vline(xintercept = 1976, 
              linetype="longdash",
              color="gray7",
              size=1)+
-  geom_vline(xintercept = 1988, 
+   geom_vline(xintercept = 1988, 
              linetype="dashed",
              color="gray27",
              size=1)
-
-#line.data <- data.frame(yintercept = c(50, 60), Lines = c("lower", "upper"))
-#ggplot(the.data, aes( year, value ) ) + 
- # geom_point(aes( colour = source )) + 
-  #geom_smooth(aes( group = 1 )) + 
-  #geom_hline(aes(yintercept = yintercept, linetype = Lines), line.data)
-
-##
-#geom_vline(aes(xintercept=1986,
-    #           color="Treaty Ratified"),
-     #      linetype="dashed",
-      #     size=1)+
