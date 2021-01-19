@@ -135,6 +135,6 @@ ggplot(rh_data, aes(x=`Year`))+
     theme(legend.position="bottom", legend.background=element_rect
          (fill="gray95", linetype=1, size=.15, color=1))
 
-#fig. 3 - avg. chloride pollution at selected monitoring stations
+#fig. 4 - avg. chloride pollution at selected monitoring stations
 
-#fig. 4 - avg. chloride concentrations
+#fig. 5 - avg. chloride concentrations
