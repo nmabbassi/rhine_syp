@@ -17,10 +17,12 @@ ggplot(rh_data, aes(x=`Year`,
                     color="Total Averages"))+
   geom_line()+
   labs(x=element_blank(), 
-       y="Average Chloride Ion Pollution in Rhine River (kg/s)", 
+       y="Average Chloride Ion Pollution 
+in Rhine River (kg/s)", 
        title=element_blank(),
        fill=element_blank())+
-  theme_gray()+      
+  theme_gray()+ 
+  theme(axis.title=element_text(size=12))+
   
   #add vert lines for treaty introduction
   geom_vline(aes(xintercept=1976,
@@ -67,7 +69,8 @@ ggplot(rh_data, aes(x=`Year`))+
             color="France"))+
   
   labs(x=element_blank(), 
-       y="Average Chloride Ion Pollution in Rhine River (kg/s) per State", 
+       y="Average Chloride Ion Pollution 
+in Rhine River (kg/s) per State", 
        title=element_blank(),
        fill=element_blank(),
        color=element_blank())+
@@ -88,6 +91,7 @@ ggplot(rh_data, aes(x=`Year`))+
                               `Treaty Signed` = "gray7",
                               `Treaty Ratified` = "gray27"))+
   theme_gray()+
+  theme(axis.title=element_text(size=12))+
   theme(legend.position="bottom", legend.background=element_rect
         (fill="gray95", linetype=1, size=.15, color=1))
 
@@ -112,7 +116,8 @@ ggplot(rh_data, aes(x=`Year`))+
                 color="France"))+
 
   labs(x=element_blank(), 
-       y="Average Chloride Concentrations in Rhine River (kg/m3) per State", 
+       y="Average Chloride Concentrations 
+in Rhine River (kg/m3) per State", 
        title=element_blank(),
        fill=element_blank(),
        color=element_blank())+
@@ -132,8 +137,11 @@ ggplot(rh_data, aes(x=`Year`))+
                                 `Treaty Signed` = "gray7",
                                 `Treaty Ratified` = "gray27"))+
     theme_gray()+
+    theme(axis.title=element_text(size=12))+
     theme(legend.position="bottom", legend.background=element_rect
          (fill="gray95", linetype=1, size=.15, color=1))
 
 #fig. 4 - avg. chloride pollution at selected monitoring stations
+
+
 
