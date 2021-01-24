@@ -1,13 +1,20 @@
 install.packages("tidyverse")
 install.packages("readxl")
+install.packages("ca")
 library(ggplot2)
 library(readxl)
+library(carData)
 
 #load data
 rh_data <- read_excel("~/Desktop/Rhine/Rhine_Chloride_Total.xlsx",
                       na="NA") 
 
+ad <- read_excel("argumentdata.xlsx")
 
+#fig. x argument simple scatterplot
+plot(ad, 
+     xlab=expression("greater treaty cooperation" * symbol('\256')),
+     ylab=expression("more costly for downstream states" * symbol('\256')))
 
 
 #fig.1 - avg. chloride pollution in Rhine
