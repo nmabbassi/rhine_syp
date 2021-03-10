@@ -16,6 +16,7 @@ library(carData)
 library(forecast)
 library(MLmetrics)
 
+
 #load data
 rh_data <- read_excel("~/Desktop/Rhine/Rhine_Chloride_Total.xlsx",
                       na="NA") 
@@ -27,6 +28,9 @@ rh_forecast <- read_excel("~/Desktop/Rhine/rhine_forecast.xlsx",
 
 rh_avgflow <- read_excel("~/Desktop/Rhine/rhine_avgflow.xlsx",
                          na="NA")
+
+
+
 
 #fig. 1: total average flow rate
 #create lines and labels for each country
