@@ -116,7 +116,7 @@ labels <- c(`Switzerland` = "red4",
             `France` = "darkgreen")
 #create data frame for horizontal lines to later add to legend
 treatysig <- c(xintercent= 1976)
-treatyrat <- c(xintercept=1986)
+treatyrat <- c(xintercept= 1986)
 
 dftest <- c(treatysig = "gray7",
             treatyrat = "gray27")
