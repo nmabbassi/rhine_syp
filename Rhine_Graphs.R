@@ -30,15 +30,33 @@ rh_avgflow <- read_excel("~/Desktop/Rhine/rhine_avgflow.xlsx",
                          na="NA")
 
 
+#ORGANIZE DATA
 
-
-#fig. 1: total average flow rate
-#create lines and labels for each country
-labels <- c(`Switzerland` = "red4", 
+###create lines and labels for each country
+####data frame for countries w  colors
+labels <- c(
+            `Switzerland` = "red4", 
             `Netherlands` = "dodgerblue4", 
             `Germany` = "slateblue",
             `France` = "darkgreen")
-#code ggplot
+
+####treaty lines and data frame
+treatyrat <- c(xintercept = 1983)
+treatyimp <- c(xintercept = 1986)
+protocolrat <- c(xintercept = 1991)
+protocolimp <- c(xintercept = 1994)
+dfone <- c(treatyrat,
+           treatyimp,
+           protocolimp,
+           protocolrat)
+
+dftest <- c(treatyrat = "gray1",
+            treatysig = "gray2",
+            protocolrat = "gray29",
+            protocolimp = "gray30")
+
+#fig. 1: total average flow rate
+##code ggplot
 ggplot(rh_avgflow, aes(x=`Year`))+
   geom_line(aes(y=`Switzerland`, 
                 color="Switzerland"))+
@@ -75,62 +93,91 @@ rh_data$totalconc <- 100*(rh_data$`Total Averages`/rh_data$ConcentrationAvg)
 #code ggplot
 ggplot(rh_data, aes(x=`Year`, 
                     y=`Total Averages`,
-                    color="Chloride Ion Averages (kg/s)"))+
+                    color="     Chloride Ion Averages (kg/s)"))+
   geom_line(aes(y=totalconc, 
-                color="Chloride Concentration (kg/m3)"))+
+                color="      Chloride Concentration (kg/m3)"))+
   
   geom_line()+
   labs(x=element_blank(), 
-       y="Chloride Pollution 
-in Rhine River", 
+       y="Chloride Pollution in Rhine River", 
        title=element_blank(),
        fill=element_blank())+
   theme_gray()+ 
   theme(axis.title=element_text(size=12))+
   
   #add vert lines for treaty introduction
-  geom_vline(aes(xintercept=1976,
-                 color="Treaty Signed"),
-             linetype="longdash",
+  geom_vline(aes(xintercept=treatyrat,
+                 color="   Treaty Ratified"),
+             linetype = "solid",
              size=.5)+
-  geom_vline(aes(xintercept=1986,
-                 color="Treaty Ratified"),
-             linetype="dashed",
+  geom_vline(aes(xintercept = treatyimp,
+                 color="  Treaty Implemented"),
+             linetype = "longdash",
              size=.5)+
-  
+  geom_vline(aes(xintercept = protocolrat,
+                 color=" Protocol Ratified"),
+             linetype = "dotdash",
+             size=.5)+
+  geom_vline(aes(xintercept = protocolimp,
+                 color="Protocol Implemented"),
+             linetype = "twodash",
+             size=.5)+
   #create legend
   scale_color_manual(name=element_blank(), 
-                     values = c(`Treaty Signed` = "gray7", 
-                                `Treaty Ratified` = "gray27",
-                                `Chloride Ion Averages (kg/s)`= "steelblue4",
-                                `Chloride Concentration (kg/m3)`= "blue3"))+
+                     values = c("blue3", "steelblue4", "gray1", "gray2", "gray29", "gray30"))+
+              
   
   theme(legend.position="bottom", legend.background=element_rect
         (fill="gray95", linetype=1, size=0.15, color=1))
 
+
+#####fig. 3 alternate#####
+ggplot(rh_data, aes(x=`Year`, 
+                    y=`Total Averages`,
+                    color="    Chloride Ion Averages (kg/s)"))+
+  geom_line()+
+  labs(x=element_blank(), 
+       y= "Chloride Pollution in Rhine River", 
+       title=element_blank(),
+       fill=element_blank())+
+  theme_gray()+ 
+  theme(axis.title=element_text(size=12))+
+  #add vert lines for treaty introduction
+  geom_vline(aes(xintercept = treatyrat,
+                 color="   Treaty Ratified"),
+             linetype = "solid",
+             size=.5)+
+  geom_vline(aes(xintercept = treatyimp,
+                 color="  Treaty Implemented"),
+             linetype = "longdash",
+             size=.5)+
+  geom_vline(aes(xintercept = protocolrat,
+                 color=" Protocol Ratified"),
+             linetype = "dotdash",
+             size=.5)+
+  geom_vline(aes(xintercept = protocolimp,
+                 color="Protocol Implemented"),
+             linetype = "twodash",
+             size=.5)+
+  #create legend
+  scale_color_manual(name=element_blank(), 
+                     values = c("steelblue4", "gray1", "gray2", "gray29", "gray30"))+
+  theme(legend.position="bottom", legend.background=element_rect
+        (fill="gray95", linetype=1, size=0.15, color=1))
+
+
+
 #fig. 4 - avg. chloride pollution in rhine per state
-#create data frame for country info
-labels <- c(`Switzerland` = "red4", 
-            `Netherlands` = "dodgerblue4", 
-            `Germany` = "slateblue",
-            `France` = "darkgreen")
-#create data frame for horizontal lines to later add to legend
-treatysig <- c(xintercent= 1976)
-treatyrat <- c(xintercept= 1986)
-
-dftest <- c(treatysig = "gray7",
-            treatyrat = "gray27")
-
 #code ggplot
 ggplot(rh_data, aes(x=`Year`))+
   geom_line(aes(y=`Switzerland`, 
-                color="Switzerland"))+
+                color="      Switzerland"))+
   geom_line(aes(y=`Netherlands`, 
-                color="Netherlands"))+
+                color="        Netherlands"))+
   geom_line(aes(y=`Germany`, 
-                color="Germany"))+
+                color="         Germany"))+
   geom_line(aes(y=`France`, 
-                color="France"))+
+                color="          France"))+
   
   labs(x=element_blank(), 
        y="Average Chloride Ion Pollution 
@@ -140,20 +187,35 @@ in Rhine River (kg/s) per State",
        color=element_blank())+
   
   #add horizontal lines for treaty info
-  geom_vline(aes(xintercept=treatysig,
-                 color="Treaty Signed"),
+  geom_vline(aes(xintercept=1983,
+                 color="   Treaty Ratified"),
+             linetype = "solid",
+             size=.5)+
+  geom_vline(aes(xintercept=1986,
+                 color="  Treaty Implemented"),
              linetype = "longdash",
              size=.5)+
-  geom_vline(aes(xintercept = treatyrat,
-                 color="Treaty Ratified"),
-             linetype = "dashed",
+  geom_vline(aes(xintercept=1991,
+                 color=" Protocol Ratified"),
+             linetype = "dotdash",
              size=.5)+
+  geom_vline(aes(xintercept=1994,
+                 color="Protocol Implemented"),
+             linetype = "twodash",
+             size=.5)+
+  
   
   #create legend
   scale_color_manual(name=element_blank(),
-                     values=c(labels, 
-                              `Treaty Signed` = "gray7",
-                              `Treaty Ratified` = "gray27"))+
+                     values=c(`          France` = "darkgreen",
+                              `         Germany` = "slateblue",
+                              `        Netherlands` = "dodgerblue4",
+                              `      Switzerland` = "red4",
+                              `   Treaty Ratified` = "gray1",
+                              `  Treaty Implemented` = "gray1",
+                              ` Protocol Ratified` = "gray30",
+                              `Protocol Implemented` = "gray30"))+
+                             
   theme_gray()+
   theme(axis.title=element_text(size=12))+
   theme(legend.position="bottom", legend.background=element_rect
