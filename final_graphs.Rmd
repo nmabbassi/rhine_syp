@@ -1,0 +1,64 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r setup, echo=FALSE, warning=FALSE, error=FALSE, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(readxl)
+
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, error = FALSE, warning = FALSE, 
+                      eval = TRUE)
+rh_data <- read_excel("~/Desktop/Rhine/Rhine_Chloride_Total.xlsx",
+                      na="NA") 
+
+ad <- read_excel("argumentdata.xlsx")
+
+rh_forecast <- read_excel("~/Desktop/Rhine/rhine_forecast.xlsx",
+                          na="NA") 
+
+rh_avgflow <- read_excel("~/Desktop/Rhine/rhine_avgflow.xlsx",
+                         na="NA")
+fert_consump <- read_excel("~/Desktop/Rhine/FR_fert_consumption.xlsx",
+           na="NA") 
+labels <- c(
+            `Switzerland` = "red4", 
+            `Netherlands` = "dodgerblue4", 
+            `Germany` = "slateblue",
+            `France` = "darkgreen")
+
+treatyrat <- c(xintercept = 1983)
+treatyimp <- c(xintercept = 1986)
+protocolrat <- c(xintercept = 1991)
+protocolimp <- c(xintercept = 1994)
+dfone <- c(treatyrat,
+           treatyimp,
+           protocolimp,
+           protocolrat)
+
+dftest <- c(treatyrat = "gray1",
+            treatysig = "gray2",
+            protocolrat = "gray29",
+            protocolimp = "gray30")
+#check for texreg package
+if(!require("texreg")) {
+  install.packages("texreg")
+  library(texreg)
+}
+```
+
+```{fig.1}
+
+
+```
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
