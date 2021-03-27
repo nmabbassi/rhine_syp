@@ -404,7 +404,7 @@ mape <- function(actual,pred){
         se_excel <- read_excel("~/Desktop/Rhine/semodel.xlsx",
                                   na="NA") 
         
-        ggplot(arima_excel, aes(x=Year))+ 
+        ggplot(se_excel, aes(x=Year))+ 
           geom_line(aes(y=lo80, 
                         color="     Low 80%"))+
           geom_line(aes(y=hi80, 
@@ -418,7 +418,8 @@ mape <- function(actual,pred){
           geom_line(aes(y=hi99, 
                         color="High 99%"))+
           labs(x=element_blank(), 
-               y="Simple exponential forecast of chloride pollution in Rhine (kg/s)", 
+               y="Simple exponential smoothing forecast of 
+chloride pollution in Rhine (kg/s)", 
                title=element_blank(),
                fill=element_blank(),
                color=element_blank())+
@@ -490,29 +491,26 @@ arima_excel <- read_excel("~/Desktop/Rhine/arima.xlsx",
 
 ggplot(arima_excel, aes(x=Year))+ 
   geom_line(aes(y=lo80, 
-                color="     Low 80%"))+
-  geom_line(aes(y=hi80, 
-                color="    High 80%"))+
+                color="80% CI"))+
   geom_line(aes(y=lo95, 
-                color="   Low 95%"))+
-  geom_line(aes(y=hi95, 
-                color="  High 95%"))+
+                color="95% CI"))+
   geom_line(aes(y=lo99, 
-                color=" Low 99%"))+
-  geom_line(aes(y=hi99, 
-                color="High 99%"))+
+                color="99% CI"))+
+  geom_line(aes(y=counter_ivs, 
+                color="Counterfactual"))+
+  geom_line(aes(y=actual, 
+                color="Actual"))+
   labs(x=element_blank(), 
        y="Arima forecast of chloride pollution in Rhine (kg/s)", 
        title=element_blank(),
        fill=element_blank(),
        color=element_blank())+
   scale_color_manual(name=element_blank(),
-                     values=c(`     Low 80%` = "tomato4",
-                              `    High 80%` = "tomato3",
-                              `   Low 95%` = "dodgerblue4",
-                              `  High 95%` = "dodgerblue3",
-                              ` Low 99%` = "black",
-                              `High 99%` = "black"))+
+                     values=c(`80% CI` = "tomato4",
+                              `95% CI` = "tomato3",
+                              `99% CI` = "indianred",
+                              `Counterfactual` = "cyan4",
+                              `Actual` = "black"))+
   theme_gray()+
   theme(axis.title=element_text(size=12))+
   theme(legend.position="bottom", legend.background=element_rect
