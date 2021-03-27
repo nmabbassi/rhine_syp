@@ -5,15 +5,21 @@ install.packages("readxl")
 install.packages("ca")
 install.packages("forecast")
 install.packages("MLmetrics")
+install.packages("fpp2")
+install.packages("dplyr")
 ######################################
 
 
 library(ggplot2)
 library(readxl)
 library(carData)
+library(ggthemes)
 
 #below used for forecasting counterfactual
 library(forecast)
+library(fpp2)
+library(TTR)
+library(dplyr)
 library(MLmetrics)
 
 
@@ -333,5 +339,226 @@ ggplot(rh_data, aes(x=`Year`))+
   theme(legend.position="bottom", legend.background=element_rect
         (fill="gray95", linetype=1, size=.15, color=1))
 
-#fig. 7 orignal forecasting test exp model
+#fig. 7 naive forecasting model
+glimpse(rh_forecast)
+
+  #time series data object (ts)
+  #frequency is annual
+rh_ts <- ts(rh_forecast[, 2], start = c(1954, 1), end = c(1975, 1), frequency = 1)
+    #mean absolute percentage error (MAPE), used to evaluate performance of forecasting models
+    ##lower MAPE value = better model
+mape <- function(actual,pred){
+  mape <- mean(abs((actual - pred)/actual))*100
+               return (mape)
+}
+
+      #reads in time series object (rh_ts)
+      ##h is number of values forecast (2003-1975)
+      ###3 predictive intervals: 80%, 95%, 99%
+        naive_mod <- naive(rh_ts, h = 28, level=c(80, 95, 99))
+        summary(naive_mod)
+
+        rh_forecast$naive = 106.77
+        mape(rh_forecast$`Total Averages`, rh_forecast$naive) ##13.7%
+              ###MAPE error is 13.7% - not terrible!
+  
+  #code ggplot 
+        forecast <- read_excel("~/Desktop/Rhine/naive.xlsx",
+                                 na="NA")       
+        ggplot(forecast, aes(x=`Year`))+
+          geom_line(aes(y=Lo80, 
+                        color="     Low 80%"))+
+          geom_line(aes(y=Hi80, 
+                        color="    High 80%"))+
+          geom_line(aes(y=Lo95, 
+                        color="   Low 95%"))+
+          geom_line(aes(y=Hi95, 
+                        color="  High 95%"))+
+          geom_line(aes(y=Lo99, 
+                        color=" Low 99%"))+
+          geom_line(aes(y=Hi99, 
+                        color="High 99%"))+
+          labs(x=element_blank(), 
+               y="Naive forecast of chloride pollution in Rhine (kg/s)", 
+               title=element_blank(),
+               fill=element_blank(),
+               color=element_blank())+
+          scale_color_manual(name=element_blank(),
+                             values=c(`     Low 80%` = "tomato4",
+                                      `    High 80%` = "tomato3",
+                                      `   Low 95%` = "dodgerblue4",
+                                      `  High 95%` = "dodgerblue3",
+                                      ` Low 99%` = "gray4",
+                                      `High 99%` = "gray3"))+
+          theme_gray()+
+          theme(axis.title=element_text(size=12))+
+          theme(legend.position="bottom", legend.background=element_rect
+                (fill="gray95", linetype=1, size=.15, color=1))
+        
+#simple exponential smoothing
+        se_model <- ses(rh_ts, h=28, level=c(80, 95, 99))
+        summary(se_model)
+        rh_se <- as.data.frame(se_model)
+        summary(rh_se)
+  #alpha shows this might not be the best model to use
+        se_excel <- read_excel("~/Desktop/Rhine/semodel.xlsx",
+                                  na="NA") 
+        
+        ggplot(arima_excel, aes(x=Year))+ 
+          geom_line(aes(y=lo80, 
+                        color="     Low 80%"))+
+          geom_line(aes(y=hi80, 
+                        color="    High 80%"))+
+          geom_line(aes(y=lo95, 
+                        color="   Low 95%"))+
+          geom_line(aes(y=hi95, 
+                        color="  High 95%"))+
+          geom_line(aes(y=lo99, 
+                        color=" Low 99%"))+
+          geom_line(aes(y=hi99, 
+                        color="High 99%"))+
+          labs(x=element_blank(), 
+               y="Simple exponential forecast of chloride pollution in Rhine (kg/s)", 
+               title=element_blank(),
+               fill=element_blank(),
+               color=element_blank())+
+          scale_color_manual(name=element_blank(),
+                             values=c(`     Low 80%` = "tomato4",
+                                      `    High 80%` = "tomato3",
+                                      `   Low 95%` = "dodgerblue4",
+                                      `  High 95%` = "dodgerblue3",
+                                      ` Low 99%` = "black",
+                                      `High 99%` = "black"))+
+          theme_gray()+
+          theme(axis.title=element_text(size=12))+
+          theme(legend.position="bottom", legend.background=element_rect
+                (fill="gray95", linetype=1, size=.15, color=1))
+
+#holt's trend method
+holt_model <- holt(rh_ts, h=28, level=c(80, 95, 99))
+rh_holt <- as.data.frame(holt_model)
+summary(rh_holt)
+
+holt_excel <- read_excel("~/Desktop/Rhine/holt.xlsx",
+                          na="NA") 
+
+ggplot(holt_excel, aes(x=`Year`))+ 
+  geom_line(aes(y=lo80, 
+                color="     Low 80%"))+
+  geom_line(aes(y=hi80, 
+                color="    High 80%"))+
+  geom_line(aes(y=lo95, 
+                color="   Low 95%"))+
+  geom_line(aes(y=hi95, 
+                color="  High 95%"))+
+  geom_line(aes(y=lo99, 
+                color=" Low 99%"))+
+  geom_line(aes(y=hi99, 
+                color="High 99%"))+
+  labs(x=element_blank(), 
+       y="Holt forecast of chloride pollution in Rhine (kg/s)", 
+       title=element_blank(),
+       fill=element_blank(),
+       color=element_blank())+
+  scale_color_manual(name=element_blank(),
+                     values=c(`     Low 80%` = "tomato4",
+                              `    High 80%` = "tomato3",
+                              `   Low 95%` = "dodgerblue4",
+                              `  High 95%` = "dodgerblue3",
+                              ` Low 99%` = "black",
+                              `High 99%` = "black"))+
+  theme_gray()+
+  theme(axis.title=element_text(size=12))+
+  theme(legend.position="bottom", legend.background=element_rect
+        (fill="gray95", linetype=1, size=.15, color=1))
+
+
+
+
+#ARIMA model
+arima_model <- auto.arima(rh_ts)
+summary(arima_model)
+    #MAPE is 5.3%
+
+fore_arima = forecast::forecast(arima_model, h=28, level=c(80, 95, 99))
+rh_arima = as.data.frame(fore_arima)
+summary(rh_arima)
+
+
+arima_excel <- read_excel("~/Desktop/Rhine/arima.xlsx",
+                       na="NA") 
+
+ggplot(arima_excel, aes(x=Year))+ 
+  geom_line(aes(y=lo80, 
+                color="     Low 80%"))+
+  geom_line(aes(y=hi80, 
+                color="    High 80%"))+
+  geom_line(aes(y=lo95, 
+                color="   Low 95%"))+
+  geom_line(aes(y=hi95, 
+                color="  High 95%"))+
+  geom_line(aes(y=lo99, 
+                color=" Low 99%"))+
+  geom_line(aes(y=hi99, 
+                color="High 99%"))+
+  labs(x=element_blank(), 
+       y="Arima forecast of chloride pollution in Rhine (kg/s)", 
+       title=element_blank(),
+       fill=element_blank(),
+       color=element_blank())+
+  scale_color_manual(name=element_blank(),
+                     values=c(`     Low 80%` = "tomato4",
+                              `    High 80%` = "tomato3",
+                              `   Low 95%` = "dodgerblue4",
+                              `  High 95%` = "dodgerblue3",
+                              ` Low 99%` = "black",
+                              `High 99%` = "black"))+
+  theme_gray()+
+  theme(axis.title=element_text(size=12))+
+  theme(legend.position="bottom", legend.background=element_rect
+        (fill="gray95", linetype=1, size=.15, color=1))
+
+
+#TBATS
+model_tbats <- tbats(rh_ts)
+summary(model_tbats)
+for_tbats <- forecast::forecast(model_tbats, h=28, level=c(80, 95, 99))
+df_tbats = as.data.frame(for_tbats)
+
+tbats_excel <- read_excel("~/Desktop/Rhine/tbats.xlsx",
+                          na="NA") 
+
+ggplot(tbats_excel, aes(x=Year))+ 
+  geom_line(aes(y=lo80, 
+                color="     Low 80%"))+
+  geom_line(aes(y=hi80, 
+                color="    High 80%"))+
+  geom_line(aes(y=lo95, 
+                color="   Low 95%"))+
+  geom_line(aes(y=hi95, 
+                color="  High 95%"))+
+  geom_line(aes(y=lo99, 
+                color=" Low 99%"))+
+  geom_line(aes(y=hi99, 
+                color="High 99%"))+
+  labs(x=element_blank(), 
+       y="TBATS forecast of chloride pollution in Rhine (kg/s)", 
+       title=element_blank(),
+       fill=element_blank(),
+       color=element_blank())+
+  scale_color_manual(name=element_blank(),
+                     values=c(`     Low 80%` = "tomato4",
+                              `    High 80%` = "tomato3",
+                              `   Low 95%` = "dodgerblue4",
+                              `  High 95%` = "dodgerblue3",
+                              ` Low 99%` = "black",
+                              `High 99%` = "black"))+
+  theme_gray()+
+  theme(axis.title=element_text(size=12))+
+  theme(legend.position="bottom", legend.background=element_rect
+        (fill="gray95", linetype=1, size=.15, color=1))
+
+
+
+
 
