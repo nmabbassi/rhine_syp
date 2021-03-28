@@ -497,7 +497,7 @@ ggplot(arima_excel, aes(x=Year))+
   geom_line(aes(y=lo99, 
                 color="99% CI"))+
   geom_line(aes(y=counter_ivs, 
-                color="Counterfactual"))+
+                color="Predicted Counterfactual"))+
   geom_line(aes(y=actual, 
                 color="Actual"))+
   labs(x=element_blank(), 
@@ -509,7 +509,7 @@ ggplot(arima_excel, aes(x=Year))+
                      values=c(`80% CI` = "tomato4",
                               `95% CI` = "tomato3",
                               `99% CI` = "indianred",
-                              `Counterfactual` = "cyan4",
+                              `Predicted Counterfactual` = "cyan4",
                               `Actual` = "black"))+
   theme_gray()+
   theme(axis.title=element_text(size=12))+
